@@ -1,5 +1,6 @@
 import sshtunnel
 import config
+from db_request import request_new_issues_from_db
 
 if __name__ == '__main__':
     with sshtunnel.SSHTunnelForwarder(
@@ -9,4 +10,4 @@ if __name__ == '__main__':
             remote_bind_address=('localhost', config.postgres_port),
             local_bind_address=('localhost', config.ssh_port)) as server:
         server.start()
-    print('hello world')
+        print(request_new_issues_from_db())
