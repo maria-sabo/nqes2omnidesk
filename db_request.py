@@ -1,4 +1,5 @@
 import datetime as dt
+import logging
 from datetime import datetime
 
 from db_connect import DbConnection
@@ -41,11 +42,15 @@ def request_new_issues_from_db():
         db_conn.curs.execute(
             """
             SELECT
-                concat(last_name, ' ', first_name, ' ', patronymic) as name, phone, email, a.name as company
-            FROM nqes_issue_request JOIN person p ON nqes_issue_request.person_id = p.id
+                nqes_issue_request.created_date, 
+                concat(last_name, ' ', first_name, ' ', patronymic) as name, 
+                phone, email, 
+                a.name as company
+            FROM nqes_issue_request 
+            JOIN person p ON nqes_issue_request.person_id = p.id
             JOIN arbitrator a ON nqes_issue_request.arbitrator_id = a.id
-            WHERE state != 'SUCCEEDED' AND nqes_issue_request.created_date > %s
-            ORDER BY nqes_issue_request.created_date
+            WHERE state = 'IN_PROGRESS' AND nqes_issue_request.created_date > %s
+            ORDER BY nqes_issue_request.created_date;
             """,
             (last_nqes_date,))
         db_response = curs.fetchall()
@@ -56,6 +61,11 @@ def request_new_issues_from_db():
                   ' Все уведомления о новых заявках с текущей даты ' +
                   last_nqes_date +
                   ', записанной в файл last_nqes_date.txt, уже были отправлены в Омнидеск.')
+            logging.info(' Все уведомления о новых заявках с текущей даты ' +
+                         last_nqes_date +
+                         ', записанной в файл last_nqes_date.txt, уже были отправлены в Омнидеск.')
     except ValueError:
         print('Введите корректную дату последней заявки в файл last_nqes_date.txt. '
               'Формат даты: YYYY-mm-dd HH:MM:SS.ffffff.')
+        logging.error(' Введите корректную дату последней заявки в файл last_nqes_date.txt. '
+                      'Формат даты: YYYY-mm-dd HH:MM:SS.ffffff.')
