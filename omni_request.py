@@ -28,10 +28,7 @@ def send_request(data2omni, email, api_token, subdomain):
     То есть в кабинет админа поступает сообщение о новой заявке.
     Возвращает True -- сообщение успешно отправлено, False -- что-то пошло не так.
 
-    :param data2omni:
-    :param person_email:
-    :param name: Строковое значение, имя сотрудника для которого создана заявка на УНЭП
-    :param request_date: Строковое значение, дата создания заявки
+    :param data2omni: экземпляр класса, хранящий информацию о сотруднике, которому выпускается УНЭП
     :param email: email админа Омнидеск
     :param api_token: api-token админа Омнидеск
     :param subdomain: Поддомен в Омнидеск
